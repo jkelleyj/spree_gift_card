@@ -14,8 +14,17 @@ module Spree
       end
 
       private
+
       def collection
-        super.order(created_at: :desc).page(params[:page]).per(Spree::Config[:orders_per_page])
+        if params[:code]
+          Spree::GiftCard.where("code ilike ?", "%#{params[:code]}%").order(created_at: :desc).page(params[:page]).
+          per(params[:per_page] || Spree::Config[:orders_per_page])
+        elsif params[:email]
+          Spree::GiftCard.where("email ilike ?", "%#{params[:email]}%").order(created_at: :desc).page(params[:page]).
+          per(params[:per_page] || Spree::Config[:orders_per_page])
+        else
+          super.order(created_at: :desc).page(params[:page]).per(Spree::Config[:orders_per_page])
+        end
       end
 
       def find_gift_card_variants

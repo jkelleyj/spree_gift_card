@@ -6,8 +6,28 @@
   <%= button_link_to Spree.t(:new_gift_card), new_object_url, icon: 'plus', class: 'btn btn-success' %>
 <% end %>
 
-<% content_for :table_filter_title do %>
-  <h2>Testing</h2>
+<% content_for :table_filter do %>
+  <h2>Search</h2>
+  <div data-hook="admin_gift_cards_index_search">
+    <%= form_tag admin_gift_cards_path, method: :get do %>
+      <div class="row">
+        <div class="col-md-6">
+          <label>Recipient Email</label>
+
+          <%= text_field_tag :email, params[:email], :class => 'form-control', :placeholder => 'email address...' %>
+        </div>
+        <div class="col-md-6">
+          <label>Gift Code</label>
+
+          <%= text_field_tag :code, params[:code], :class => 'form-control js-quick-search-target', :placeholder => 'gift code...' %>
+        </div>
+      </div>
+      <div data-hook="admin_gift_cards_index_search_buttons" class="form-actions">
+        <%= button Spree.t(:filter_results), 'search' %>
+      </div>
+
+    <% end %>
+  </div>
 <% end %>
 
 <table class="index table table-hover">

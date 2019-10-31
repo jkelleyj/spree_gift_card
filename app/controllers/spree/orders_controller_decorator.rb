@@ -6,7 +6,19 @@ Spree::OrdersController.class_eval do
     @order.assign_attributes(order_gift_code_params)
     apply_gift_code if @order.gift_code.present?
 
-    redirect_to checkout_state_path(@order.state)
+    if @order.total.zero?
+      @order.bill_address ||= @order.ship_address
+      @order.save
+      @order.next
+    end
+
+    if @order.completed?
+      flash.notice = Spree.t(:order_processed_successfully)
+      flash['order_completed'] = true
+      redirect_to order_path(@order)
+    else
+      redirect_to checkout_state_path(@order.state)
+    end
   end
 
   private
